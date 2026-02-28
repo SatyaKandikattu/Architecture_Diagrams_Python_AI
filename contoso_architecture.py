@@ -4,6 +4,8 @@ Generates PNG, DOT, and Draw.io format diagrams
 """
 
 import subprocess
+# avoid module name conflict: ensure installed "diagrams" package is loaded rather than the
+# local output directory. rename output folder and fix imports accordingly.
 from diagrams import Diagram, Cluster, Edge
 from diagrams.azure.compute import AppServices, FunctionApps
 from diagrams.azure.network import (
@@ -75,7 +77,7 @@ monitoring_cluster_attr = {
 # Create the diagram
 with Diagram(
     "Contoso Medical Portal Architecture",
-    filename="diagrams/contoso_architecture",
+    filename="output/contoso_architecture",
     outformat=["png", "dot"],
     show=False,
     direction="TB",
@@ -164,23 +166,23 @@ with Diagram(
     backend_api >> Edge(label="Telemetry", style="dotted", color="green") >> appi
     func_app >> Edge(label="Telemetry", style="dotted", color="green") >> appi
 
-print("✓ PNG and DOT files generated in diagrams/")
+print("✓ PNG and DOT files generated in output/")
 
 # Convert DOT to Draw.io format
 try:
     subprocess.run([
         "graphviz2drawio", 
-        "diagrams/contoso_architecture.dot", 
+        "output/contoso_architecture.dot", 
         "-o", 
-        "diagrams/contoso_architecture.drawio"
+        "output/contoso_architecture.drawio"
     ], check=True)
-    print("✓ Draw.io file generated: diagrams/contoso_architecture.drawio")
+    print("✓ Draw.io file generated: output/contoso_architecture.drawio")
 except subprocess.CalledProcessError as e:
     print(f"✗ Failed to convert to Draw.io format: {e}")
 except FileNotFoundError:
     print("✗ graphviz2drawio not found. Install with: pip install graphviz2drawio")
 
 print("\nGenerated files:")
-print("  - diagrams/contoso_architecture.png")
-print("  - diagrams/contoso_architecture.dot")
-print("  - diagrams/contoso_architecture.drawio")
+print("  - output/contoso_architecture.png")
+print("  - output/contoso_architecture.dot")
+print("  - output/contoso_architecture.drawio")
